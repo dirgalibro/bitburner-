@@ -1,1 +1,44 @@
-test
+// cashFlow.js
+
+/** @param {NS} ns **/
+export async function main(ns) {
+    // Mendapatkan nama server dari argumen saat menjalankan skrip
+    const server = ns.args[0];
+
+    // Pastikan server yang ditargetkan diberikan
+    if (!server) {
+        ns.tprint("Please specify a server name as an argument. Exiting.");
+        return;
+    }
+
+    // Pastikan kamu memiliki akses root
+    if (!ns.hasRootAccess(server)) {
+        ns.tprint(`No root access to ${server}. Exiting.`);
+        return;
+    }
+
+    while (true) {
+        // Melakukan hack untuk mendapatkan uang
+        const hackAmount = await ns.hack(server);
+        ns.print(`Hacked ${server} and stole $${hackAmount}.`);
+
+        // Menampilkan saldo setelah hacking
+        const currentMoney = ns.getServerMoneyAvailable(server);
+        ns.print(`Current money available on ${server}: $${currentMoney}.`);
+
+        // Menggunakan grow untuk meningkatkan uang di server
+        const growAmount = await ns.grow(server);
+        ns.print(`Grew money on ${server}.`);
+
+        // Menampilkan saldo setelah grow
+        const newMoney = ns.getServerMoneyAvailable(server);
+        ns.print(`New money available on ${server}: $${newMoney}.`);
+
+        // Mengurangi keamanan server setelah hack
+        await ns.weaken(server);
+        ns.print(`Weakened ${server}.`);
+
+        // Tunggu sejenak sebelum melanjutkan
+        await ns.sleep(5000); // Menunggu 5 detik sebelum tindakan berikutnya
+    }
+}
